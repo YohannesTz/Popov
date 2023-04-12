@@ -1,9 +1,15 @@
 package com.github.yohannestz.popov.ui.activities
 
+import android.R
+import android.app.AlertDialog
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
+import android.text.TextUtils
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,20 +19,25 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.yohannestz.popov.ui.calls.CallScreen
+import com.github.yohannestz.popov.services.NotificationService
+import com.github.yohannestz.popov.ui.notifications.NotificationScreen
 import com.github.yohannestz.popov.ui.theme.PopovTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners"
+    private val ACTION_NOTIFICATION_LISTENER_SETTINGS =
+        "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
+
+
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +58,9 @@ class MainActivity : ComponentActivity() {
                     )
 
                     if (requestedPermissions.allPermissionsGranted) {
-                        CallScreen()
+                        NotificationScreen()
                     } else {
+                        Log.e("permission", requestedPermissions.revokedPermissions.toString())
                         Column(modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center) {
@@ -67,5 +79,52 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        if (!isNotificationServiceEnabled()) {
+            buildNotificationServiceAlertDialog().show()
+        }
+
+        if (!NotificationService.isServiceRunning()) {
+            val notificationServiceIntent = Intent(this, NotificationService::class.java)
+            startService(notificationServiceIntent)
+        }
     }
+
+    private fun buildNotificationServiceAlertDialog(): AlertDialog {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Notification Listener Service")
+        alertDialogBuilder.setMessage("Allow us to read notifications!")
+        alertDialogBuilder.setPositiveButton(
+            "YES"
+        ) { _, _ -> startActivity(Intent(ACTION_NOTIFICATION_LISTENER_SETTINGS)) }
+        alertDialogBuilder.setNegativeButton(
+            "NO"
+        ) { _, _ ->
+            // If you choose to not enable the notification listener
+            // the app. will not work as expected
+        }
+        return alertDialogBuilder.create()
+    }
+
+    private fun isNotificationServiceEnabled(): Boolean {
+        val pkgName = packageName
+        val flat: String = Settings.Secure.getString(
+            contentResolver,
+            ENABLED_NOTIFICATION_LISTENERS
+        )
+        if (!TextUtils.isEmpty(flat)) {
+            val names = flat.split(":".toRegex()).dropLastWhile { it.isEmpty() }
+                .toTypedArray()
+            for (i in names.indices) {
+                val cn = ComponentName.unflattenFromString(names[i])
+                if (cn != null) {
+                    if (TextUtils.equals(pkgName, cn.packageName)) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+
 }
