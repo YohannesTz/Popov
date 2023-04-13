@@ -5,9 +5,7 @@ import android.content.Context
 import androidx.room.Room
 import com.github.yohannestz.popov.data.local.CallRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
-import com.github.yohannestz.popov.data.local.db.NotificationRepositoryImpl
-import com.github.yohannestz.popov.data.local.db.NotificationCacheDao
-import com.github.yohannestz.popov.data.local.db.NotificationDatabase
+import com.github.yohannestz.popov.data.local.db.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -50,6 +48,18 @@ object AppModule {
     @Singleton
     fun provideNotificationCacheDao(notificationDatabase: NotificationDatabase): NotificationCacheDao {
         return notificationDatabase.notificationCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecordCacheDao(notificationDatabase: NotificationDatabase): RecordCacheDao {
+        return notificationDatabase.recordCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecordRepository(recordCacheDao: RecordCacheDao): RecordRepositoryImpl {
+        return RecordRepositoryImpl(recordCacheDao)
     }
 
     @Provides

@@ -54,7 +54,7 @@ class NotificationService : NotificationListenerService() {
         isRunning = false
     }
     companion object {
-        var isRunning = false
+        private var isRunning = false
         fun isServiceRunning(): Boolean {
             return isRunning
         }

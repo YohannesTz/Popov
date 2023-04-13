@@ -20,6 +20,16 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
+            }
+        }
+    }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
     buildTypes {
@@ -59,6 +69,9 @@ dependencies {
 
     //accompanist permission helper
     implementation "com.google.accompanist:accompanist-permissions:0.31.0-alpha"
+
+    //call recorder
+    implementation 'com.github.aykuttasil:CallRecorder:1.5.3'
 
     //dagger - hilt
     implementation "com.google.dagger:hilt-android:2.44"

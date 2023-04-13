@@ -3,7 +3,11 @@ package com.github.yohannestz.popov.ui.activities
 import android.R
 import android.app.AlertDialog
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.icu.text.AlphabeticIndex.Record
+import android.media.MediaRecorder
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
@@ -22,7 +26,10 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.aykuttasil.callrecord.CallRecord
 import com.github.yohannestz.popov.services.NotificationService
+import com.github.yohannestz.popov.services.PhoneCallStateReceiver
+import com.github.yohannestz.popov.services.RecorderService
 import com.github.yohannestz.popov.ui.notifications.NotificationScreen
 import com.github.yohannestz.popov.ui.theme.PopovTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -53,7 +60,11 @@ class MainActivity : ComponentActivity() {
                             android.Manifest.permission.READ_SMS,
                             android.Manifest.permission.READ_CONTACTS,
                             android.Manifest.permission.WRITE_CALL_LOG,
-                            android.Manifest.permission.READ_CALL_LOG
+                            android.Manifest.permission.READ_CALL_LOG,
+                            android.Manifest.permission.READ_PHONE_STATE,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                            android.Manifest.permission.RECORD_AUDIO,
+                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
                         )
                     )
 
@@ -61,10 +72,15 @@ class MainActivity : ComponentActivity() {
                         NotificationScreen()
                     } else {
                         Log.e("permission", requestedPermissions.revokedPermissions.toString())
-                        Column(modifier = Modifier.fillMaxSize(),
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center) {
-                            Text(text = "Please Grant all permissions!", style = MaterialTheme.typography.h6)
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Text(
+                                text = "Please Grant all permissions!",
+                                style = MaterialTheme.typography.h6
+                            )
                             Button(
                                 onClick = {
                                     requestedPermissions.launchMultiplePermissionRequest()
@@ -80,13 +96,37 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        if (!isNotificationServiceEnabled()) {
+/*        callRecord = CallRecord.Builder(this)
+            .setLogEnable(true)
+            .setRecordFileName("call_rec_")
+            .setRecordDirName("callRec")
+            .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+            .setShowSeed(true)
+            .build()
+
+        callRecord.startCallReceiver()*/
+
+        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+
+        Log.e("asked_before", sharedPref.getBoolean("asked_before", false).toString())
+        if (!isNotificationServiceEnabled() && !sharedPref.getBoolean("asked_before", false)) {
             buildNotificationServiceAlertDialog().show()
+            with(sharedPref.edit()) {
+                putBoolean("asked_before", true)
+                apply()
+            }
         }
+
+        Log.e("asked_before", sharedPref.getBoolean("asked_before", false).toString())
 
         if (!NotificationService.isServiceRunning()) {
             val notificationServiceIntent = Intent(this, NotificationService::class.java)
             startService(notificationServiceIntent)
+        }
+
+        if (!RecorderService.isRunning()) {
+            val recorderIntent = Intent(this, RecorderService::class.java)
+            startService(recorderIntent)
         }
     }
 
@@ -104,6 +144,10 @@ class MainActivity : ComponentActivity() {
             // the app. will not work as expected
         }
         return alertDialogBuilder.create()
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     private fun isNotificationServiceEnabled(): Boolean {
