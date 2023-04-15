@@ -2,10 +2,8 @@ package com.github.yohannestz.popov.ui.notifications
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -55,6 +53,15 @@ fun NotificationScreen(notificationsViewModel: NotificationsViewModel = hiltView
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.h6
                 )
+                Button(
+                    onClick = {
+                        notificationsViewModel.startUpload()
+                    },
+                    shape = RoundedCornerShape(22.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "Upload files", style = MaterialTheme.typography.h6)
+                }
             }
         } else {
             /*Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {

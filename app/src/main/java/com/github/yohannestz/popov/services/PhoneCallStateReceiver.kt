@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.getMainExecutor
 import com.aykuttasil.callrecord.CallRecord
 import com.github.yohannestz.popov.data.local.db.RecordRepositoryImpl
 import com.github.yohannestz.popov.data.model.Record
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,9 +23,9 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class PhoneCallStateReceiver : BroadcastReceiver() {
 
-    private lateinit var callRecord: CallRecord
     private lateinit var gContext: Context
     private lateinit var mediaRecorder: MediaRecorder
 
@@ -42,7 +43,6 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
 */
 
         mediaRecorder = buildMediaRecorder(context)
-        mediaRecorder.prepare()
         isMediaPrepared = true
 
         val telephonyManager =
@@ -88,7 +88,7 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                     isMediaPrepared = false
                     isMediaRecording = false
                     CoroutineScope(Dispatchers.IO).launch {
-                        recordingRepositoryImpl.insertRecording(Record(timeStamp = "", fileName = fileUrl, isUploaded = false))
+                        recordingRepositoryImpl.insertRecording(Record(timeStamp = Calendar.getInstance().time.toString(), fileName = fileUrl, isUploaded = false))
                         fileUrl = ""
                     }
                 }
@@ -102,6 +102,7 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
             TelephonyManager.CALL_STATE_OFFHOOK -> {
                 Log.e("PhoneCallStateReceiver", "CALL_STATE_OFFHOOK : Detected in background")
                 //callRecord.startCallReceiver()
+                mediaRecorder.prepare()
                 mediaRecorder.start()
                 isMediaRecording = true
             }
@@ -113,11 +114,6 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
             MediaRecorder(context)
         } else {
             MediaRecorder()
-        }
-        val source = if (Build.VERSION.SDK_INT >= 29) {
-            MediaRecorder.AudioSource.VOICE_RECOGNITION
-        } else {
-            MediaRecorder.AudioSource.MIC
         }
 
         val filePath =

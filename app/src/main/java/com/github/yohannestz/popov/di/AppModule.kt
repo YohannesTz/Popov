@@ -6,10 +6,16 @@ import androidx.room.Room
 import com.github.yohannestz.popov.data.local.CallRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.local.db.*
+import com.github.yohannestz.popov.data.remote.NetworkService
+import com.github.yohannestz.popov.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -57,7 +63,6 @@ object AppModule {
     }
 
     @Provides
-    @Singleton
     fun provideRecordRepository(recordCacheDao: RecordCacheDao): RecordRepositoryImpl {
         return RecordRepositoryImpl(recordCacheDao)
     }
@@ -66,5 +71,23 @@ object AppModule {
     @Singleton
     fun provideNotificationRepository(notificationCacheDao: NotificationCacheDao): NotificationRepositoryImpl {
         return NotificationRepositoryImpl(notificationCacheDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(): NetworkService {
+        val okHttpClient = OkHttpClient.Builder()
+            .readTimeout(160, TimeUnit.SECONDS)
+            .connectTimeout(160, TimeUnit.SECONDS)
+            .writeTimeout(160, TimeUnit.SECONDS)
+            .build()
+
+
+        return Retrofit.Builder()
+            .baseUrl(Constants.PHP_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+            .create(NetworkService::class.java)
     }
 }
