@@ -69,7 +69,7 @@ class NotificationsViewModel @Inject constructor(
                     val response = networkService.uploadFile(fileToUpload, filename).body()
                     Log.e("response: ", response.toString())
                     if (response!!.success) {
-                        recordRepositoryImpl.markAsUploaded(uploadList[2].id)
+                        recordRepositoryImpl.markAsUploaded(record.id)
                         Log.e("updatedDb: ", "to uploaded for id ${record.id}")
                     }
                 }

@@ -28,7 +28,7 @@ class CallsViewModel @Inject constructor(
             }
 
             withContext(Dispatchers.Default) {
-                val list = callRepository.readAllCalls()
+                val list = callRepository.readCallsForToday()
                 _state.value = state.value.copy(
                     callLogList = list
                 )

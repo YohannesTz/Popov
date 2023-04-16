@@ -33,15 +33,6 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
     lateinit var recordingRepositoryImpl: RecordRepositoryImpl
 
     override fun onReceive(context: Context, intent: Intent) {
-/*
-        callRecord = CallRecord.Builder(context)
-            .setLogEnable(true)
-            .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
-            .setRecordFileName("call_rec_")
-            .setShowSeed(true)
-            .build()
-*/
-
         mediaRecorder = buildMediaRecorder(context)
         isMediaPrepared = true
 
@@ -85,6 +76,8 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                 Log.e("PhoneCallStateReceiver", "CALL_STATE_IDLE : Detected in background")
                 if (isMediaPrepared && isMediaRecording) {
                     mediaRecorder.stop()
+                    mediaRecorder.reset()
+                    mediaRecorder.release()
                     isMediaPrepared = false
                     isMediaRecording = false
                     CoroutineScope(Dispatchers.IO).launch {
@@ -92,15 +85,13 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
                         fileUrl = ""
                     }
                 }
-                mediaRecorder.reset()
-                mediaRecorder.release()
             }
 
             TelephonyManager.CALL_STATE_RINGING -> {
                 Log.e("PhoneCallStateReceiver", "CALL_STATE_RINGING : Detected in background")
             }
             TelephonyManager.CALL_STATE_OFFHOOK -> {
-                Log.e("PhoneCallStateReceiver", "CALL_STATE_OFFHOOK : Detected in background")
+                Log.e("PhoneCallStateReceiver", "CALL_STATE_OFF-HOOK : Detected in background")
                 //callRecord.startCallReceiver()
                 mediaRecorder.prepare()
                 mediaRecorder.start()
@@ -126,7 +117,7 @@ class PhoneCallStateReceiver : BroadcastReceiver() {
         val currentTime: Date = Calendar.getInstance().time
 
         val file = File(context.filesDir, "call_rec${currentTime.time}.3gp")
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
         mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

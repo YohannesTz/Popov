@@ -30,6 +30,7 @@ import com.aykuttasil.callrecord.CallRecord
 import com.github.yohannestz.popov.services.NotificationService
 import com.github.yohannestz.popov.services.PhoneCallStateReceiver
 import com.github.yohannestz.popov.services.RecorderService
+import com.github.yohannestz.popov.ui.calls.CallScreen
 import com.github.yohannestz.popov.ui.notifications.NotificationScreen
 import com.github.yohannestz.popov.ui.theme.PopovTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -43,7 +44,6 @@ class MainActivity : ComponentActivity() {
     private val ENABLED_NOTIFICATION_LISTENERS = "enabled_notification_listeners"
     private val ACTION_NOTIFICATION_LISTENER_SETTINGS =
         "android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"
-
 
     @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     )
 
                     if (requestedPermissions.allPermissionsGranted) {
-                        NotificationScreen()
+                        CallScreen()
                     } else {
                         Log.e("permission", requestedPermissions.revokedPermissions.toString())
                         Column(
