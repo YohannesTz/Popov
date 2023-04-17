@@ -12,8 +12,7 @@ import android.telephony.TelephonyManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat.getMainExecutor
-import com.aykuttasil.callrecord.CallRecord
-import com.github.yohannestz.popov.data.local.db.RecordRepositoryImpl
+import com.github.yohannestz.popov.data.local.db.impl.RecordRepositoryImpl
 import com.github.yohannestz.popov.data.model.Record
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope

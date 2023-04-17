@@ -4,7 +4,6 @@ import android.content.Context
 import android.provider.CallLog
 import android.provider.Telephony
 import android.util.Log
-import com.github.yohannestz.popov.data.model.Call
 import com.github.yohannestz.popov.data.model.Sms
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +39,12 @@ class MessageRepository @Inject constructor(
             val textType = cursor.getString(typeColumnIndex)
             val textDate = cursor.getString(dateColumnIndex)
 
-            val textData = Sms(num, text, textType, textDate)
+            val textData = Sms(
+                phoneNumber = num,
+                textBody = text,
+                textType = textType,
+                date = textDate
+            )
             smsList.add(textData)
         }
 
@@ -80,7 +84,12 @@ class MessageRepository @Inject constructor(
             val textType = cursor.getString(typeColumnIndex)
             val textDate = cursor.getString(dateColumnIndex)
 
-            val textData = Sms(num, text, textType, textDate)
+            val textData = Sms(
+                phoneNumber = num,
+                textBody = text,
+                textType = textType,
+                date = textDate
+            )
             messageForToday.add(textData)
         }
 

@@ -1,4 +1,4 @@
-package com.github.yohannestz.popov.data.local.db
+package com.github.yohannestz.popov.data.local.db.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

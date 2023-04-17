@@ -5,8 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.yohannestz.popov.data.local.db.NotificationRepositoryImpl
-import com.github.yohannestz.popov.data.local.db.RecordRepositoryImpl
+import com.github.yohannestz.popov.data.local.db.impl.NotificationRepositoryImpl
+import com.github.yohannestz.popov.data.local.db.impl.RecordRepositoryImpl
 import com.github.yohannestz.popov.data.remote.NetworkService
 import com.github.yohannestz.popov.ui.notifications.NotificationScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel

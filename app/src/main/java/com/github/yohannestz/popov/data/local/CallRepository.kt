@@ -48,7 +48,14 @@ class CallRepository @Inject constructor(
 
             Log.e("details: ", "$num -- $name -- $date -- $type -- $isNew -- $duration")
 
-            val callData = Call(num, name, date, type, isNew, duration)
+            val callData = Call(
+                callNumber = num,
+                callName = name,
+                callDate = date,
+                callType = type,
+                isCallNew = isNew,
+                callDuration = duration
+            )
             callList.add(callData)
         }
 
@@ -96,7 +103,14 @@ class CallRepository @Inject constructor(
 
             Log.e("details: ", "$num -- $name -- $date -- $type -- $isNew -- $duration")
 
-            val callData = Call(num, name, date, type, isNew, duration)
+            val callData = Call(
+                callNumber = num,
+                callName = name,
+                callDate = date,
+                callType = type,
+                isCallNew = isNew,
+                callDuration = duration
+            )
             callListForToday.add(callData)
         }
 

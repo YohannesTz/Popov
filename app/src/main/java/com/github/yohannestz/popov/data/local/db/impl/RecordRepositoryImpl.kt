@@ -1,5 +1,6 @@
-package com.github.yohannestz.popov.data.local.db
+package com.github.yohannestz.popov.data.local.db.impl
 
+import com.github.yohannestz.popov.data.local.db.dao.RecordCacheDao
 import com.github.yohannestz.popov.data.model.Record
 import javax.inject.Inject
 

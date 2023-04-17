@@ -1,12 +1,11 @@
 package com.github.yohannestz.popov.services
 
 import android.content.Intent
-import android.os.Bundle
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import com.github.yohannestz.popov.data.local.db.NotificationRepositoryImpl
+import com.github.yohannestz.popov.data.local.db.impl.NotificationRepositoryImpl
 import com.github.yohannestz.popov.data.model.Notification
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -6,6 +6,11 @@ import androidx.room.Room
 import com.github.yohannestz.popov.data.local.CallRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.local.db.*
+import com.github.yohannestz.popov.data.local.db.dao.NotificationCacheDao
+import com.github.yohannestz.popov.data.local.db.dao.RecordCacheDao
+import com.github.yohannestz.popov.data.local.db.NotificationDatabase
+import com.github.yohannestz.popov.data.local.db.impl.NotificationRepositoryImpl
+import com.github.yohannestz.popov.data.local.db.impl.RecordRepositoryImpl
 import com.github.yohannestz.popov.data.remote.NetworkService
 import com.github.yohannestz.popov.util.Constants
 import dagger.Module
