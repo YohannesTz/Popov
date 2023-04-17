@@ -30,7 +30,7 @@ class MessagesViewModel @Inject constructor(
             }
 
             withContext(Dispatchers.Default) {
-                val list = messagesRepository.readAllSms()
+                val list = messagesRepository.getAllMessagesForToday()
                 _state.value = state.value.copy(
                      messagesList = list
                 )

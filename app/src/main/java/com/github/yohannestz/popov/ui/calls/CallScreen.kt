@@ -9,6 +9,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -57,16 +58,28 @@ fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
                 )
             }
         } else {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(state.callLogList.size) { index ->
-                    Text(text = state.callLogList[index].toString(), modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp))
-                }
+
+            val list = remember {
+                state.callLogList
             }
-            /*Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-                state.callLogList.forEach { item ->
-                    Text(text = item.toString(), modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp))
-                }
-            }*/
+
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                items(
+                    count = list.size,
+                    key = {
+                        it
+                    },
+                    itemContent = {index ->
+                        val listItem = remember {
+                            list[index]
+                        }
+                        Text(
+                            text = listItem.toString(),
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp)
+                        )
+                    }
+                )
+            }
         }
     }
 }

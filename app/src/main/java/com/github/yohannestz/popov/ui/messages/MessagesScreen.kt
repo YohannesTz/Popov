@@ -58,11 +58,6 @@ fun MessagesScreen(messagesViewModel: MessagesViewModel = hiltViewModel()) {
                 )
             }
         } else {
-            /*Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-                state.messagesList.forEach { item ->
-                    Text(text = item.toString(), modifier = Modifier.padding(vertical = 8.dp))
-                }
-            }*/
             val list = remember {
                 state.messagesList
             }
