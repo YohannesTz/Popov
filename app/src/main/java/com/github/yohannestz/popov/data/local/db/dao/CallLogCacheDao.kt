@@ -10,14 +10,14 @@ import com.github.yohannestz.popov.data.model.Call
 interface CallLogCacheDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCallLogs(callLogList: List<Call>)
+    suspend fun insertCallLogs(callLogList: List<Call>)
 
     @Query("SELECT * FROM Call")
-    fun getAll(): List<Call>
+    suspend fun getAll(): List<Call>
 
     @Query("SELECT * FROM Call WHERE isUploaded = 0")
-    fun getAllUnUploaded(): List<Call>
+    suspend fun getAllUnUploaded(): List<Call>
 
     @Query("UPDATE Call SET isUploaded = 1 WHERE id IN (:updateIds)")
-    fun updateUploaded(updateIds: List<Int>)
+    suspend fun updateUploaded(updateIds: List<Int>)
 }

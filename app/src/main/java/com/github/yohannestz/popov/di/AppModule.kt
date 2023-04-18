@@ -9,6 +9,8 @@ import com.github.yohannestz.popov.data.local.db.*
 import com.github.yohannestz.popov.data.local.db.dao.NotificationCacheDao
 import com.github.yohannestz.popov.data.local.db.dao.RecordCacheDao
 import com.github.yohannestz.popov.data.local.db.NotificationDatabase
+import com.github.yohannestz.popov.data.local.db.dao.CallLogCacheDao
+import com.github.yohannestz.popov.data.local.db.dao.MessageLogCacheDao
 import com.github.yohannestz.popov.data.local.db.impl.NotificationRepositoryImpl
 import com.github.yohannestz.popov.data.local.db.impl.RecordRepositoryImpl
 import com.github.yohannestz.popov.data.remote.NetworkService
@@ -52,7 +54,9 @@ object AppModule {
             context,
             NotificationDatabase::class.java,
             "Notification"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     @Provides
@@ -65,6 +69,18 @@ object AppModule {
     @Singleton
     fun provideRecordCacheDao(notificationDatabase: NotificationDatabase): RecordCacheDao {
         return notificationDatabase.recordCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCallLogCacheDao(notificationDatabase: NotificationDatabase): CallLogCacheDao {
+        return notificationDatabase.callLogCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMessageLogCacheDao(notificationDatabase: NotificationDatabase): MessageLogCacheDao {
+        return notificationDatabase.messageCacheDao()
     }
 
     @Provides

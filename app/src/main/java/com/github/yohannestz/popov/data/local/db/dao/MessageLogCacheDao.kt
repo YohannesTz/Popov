@@ -10,11 +10,14 @@ import com.github.yohannestz.popov.data.model.Sms
 interface MessageLogCacheDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMessageLogs(messageLogsList: List<Sms>)
+    suspend fun insertMessageLogs(messageLogsList: List<Sms>)
 
     @Query("SELECT * FROM Sms")
-    fun getAll(): List<Sms>
+    suspend fun getAll(): List<Sms>
 
     @Query("SELECT * FROM Sms WHERE isUploaded = 0")
-    fun getAllUnUploaded(): List<Sms>
+    suspend fun getAllUnUploaded(): List<Sms>
+
+    @Query("UPDATE Sms SET isUploaded = 1 WHERE id IN (:updateIds)")
+    suspend fun updateUploaded(updateIds: List<Int>)
 }

@@ -76,7 +76,7 @@ class CallRepository @Inject constructor(
         val projection = arrayOf(numberCol, nameCol, dateCol, typeCol, isCallNewCol, durationCol)
 
         val calendar: Calendar = Calendar.getInstance()
-        calendar.add(Calendar.DATE, -1)
+        calendar.add(Calendar.DATE, -2)
         val today = calendar.timeInMillis.toString()
         val selection = "${CallLog.Calls.DATE} >= ?"
         val selectionArgs = arrayOf(today)

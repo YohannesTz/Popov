@@ -13,9 +13,11 @@ import com.github.yohannestz.popov.data.model.Record
 import com.github.yohannestz.popov.data.model.Sms
 
 @Database(
-    entities = [Notification::class, Record::class, Call::class, Sms::class], version = 3, autoMigrations = [
+    entities = [Notification::class, Record::class, Call::class, Sms::class], version = 5, autoMigrations = [
         AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(from = 2, to = 3),
+        AutoMigration(from = 3, to = 4),
+        AutoMigration(from = 4, to = 5)
     ]
 )
 abstract class NotificationDatabase : RoomDatabase() {
