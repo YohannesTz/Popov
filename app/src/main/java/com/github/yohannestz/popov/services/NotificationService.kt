@@ -28,10 +28,15 @@ class NotificationService : NotificationListenerService() {
         val extras = sbn!!.notification.extras
         val title = extras.getString("android.title").toString();
         val text = extras.getCharSequence("android.text").toString();
+        val tickerText = if (sbn.notification.tickerText == null) {
+            "Empty"
+        } else {
+            sbn.notification.tickerText.toString()
+        }
         val notification = Notification(
             sbn.id, title, text,
             sbn.postTime.toString(),
-            sbn.notification.tickerText as String
+            tickerText
         )
 
         Log.e("service", "notification logging...")

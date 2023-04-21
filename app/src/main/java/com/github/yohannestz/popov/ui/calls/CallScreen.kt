@@ -4,7 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -63,7 +65,7 @@ fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
                 state.callLogList
             }
 
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            /*LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(
                     count = list.size,
                     key = {
@@ -79,6 +81,15 @@ fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
                         )
                     }
                 )
+            }*/
+            Button(
+                onClick = {
+                    callsViewModel.startUpload()
+                },
+                shape = RoundedCornerShape(22.dp),
+                modifier = Modifier.padding(16.dp)
+            ) {
+                Text(text = "Upload files", style = MaterialTheme.typography.h6)
             }
         }
     }

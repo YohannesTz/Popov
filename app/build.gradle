@@ -21,15 +21,10 @@ android {
             useSupportLibrary true
         }
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
 
         kapt {
             arguments {
-                arg("room.schemaLocation", "$projectDir/schemas".toString())
+                arg("room.schemaLocation", "$projectDir/schemas")
             }
         }
     }
@@ -95,6 +90,9 @@ dependencies {
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    //gson json converter
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

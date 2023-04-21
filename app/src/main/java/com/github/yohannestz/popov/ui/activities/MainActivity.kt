@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.icu.text.AlphabeticIndex.Record
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
@@ -26,6 +27,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
 import com.aykuttasil.callrecord.CallRecord
 import com.github.yohannestz.popov.services.NotificationService
 import com.github.yohannestz.popov.services.PhoneCallStateReceiver
@@ -55,6 +57,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val storagePermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        android.Manifest.permission.MANAGE_EXTERNAL_STORAGE
+                    } else {
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    }
                     val requestedPermissions = rememberMultiplePermissionsState(
                         arrayListOf(
                             android.Manifest.permission.READ_SMS,
@@ -64,15 +71,16 @@ class MainActivity : ComponentActivity() {
                             android.Manifest.permission.READ_PHONE_STATE,
                             android.Manifest.permission.READ_EXTERNAL_STORAGE,
                             android.Manifest.permission.RECORD_AUDIO,
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            android.Manifest.permission.RECEIVE_BOOT_COMPLETED
+                            android.Manifest.permission.RECEIVE_BOOT_COMPLETED,
                         )
                     )
 
                     if (requestedPermissions.allPermissionsGranted) {
                         CallScreen()
                     } else {
-                        Log.e("permission", requestedPermissions.revokedPermissions.toString())
+                        requestedPermissions.revokedPermissions.map { permissionState ->
+                            Log.e("permission", permissionState.permission)
+                        }
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -152,8 +160,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun isNotificationServiceEnabled(): Boolean {
-        val pkgName = packageName
-        val flat: String = Settings.Secure.getString(
+        /*val flat: String = Settings.Secure.getString(
             contentResolver,
             ENABLED_NOTIFICATION_LISTENERS
         )
@@ -169,7 +176,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        return false
+        return false*/
+        return NotificationManagerCompat.getEnabledListenerPackages(applicationContext).contains(packageName)
     }
 
 }

@@ -8,11 +8,14 @@ import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.local.db.*
 import com.github.yohannestz.popov.data.local.db.dao.NotificationCacheDao
 import com.github.yohannestz.popov.data.local.db.dao.RecordCacheDao
-import com.github.yohannestz.popov.data.local.db.NotificationDatabase
+import com.github.yohannestz.popov.data.local.db.ApplicationDatabase
 import com.github.yohannestz.popov.data.local.db.dao.CallLogCacheDao
+import com.github.yohannestz.popov.data.local.db.dao.ContactsLogCacheDao
 import com.github.yohannestz.popov.data.local.db.dao.MessageLogCacheDao
+import com.github.yohannestz.popov.data.local.db.impl.ContactsFileLogRepositoryImpl
 import com.github.yohannestz.popov.data.local.db.impl.NotificationRepositoryImpl
 import com.github.yohannestz.popov.data.local.db.impl.RecordRepositoryImpl
+import com.github.yohannestz.popov.data.model.Bot
 import com.github.yohannestz.popov.data.remote.NetworkService
 import com.github.yohannestz.popov.util.Constants
 import dagger.Module
@@ -28,6 +31,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
 
     @Provides
     @Singleton
@@ -49,10 +53,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationDatabase(context: Context): NotificationDatabase {
+    fun provideApplicationDatabase(context: Context): ApplicationDatabase {
         return Room.databaseBuilder(
             context,
-            NotificationDatabase::class.java,
+            ApplicationDatabase::class.java,
             "Notification"
         )
             .fallbackToDestructiveMigration()
@@ -61,26 +65,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationCacheDao(notificationDatabase: NotificationDatabase): NotificationCacheDao {
-        return notificationDatabase.notificationCacheDao()
+    fun provideNotificationCacheDao(applicationDatabase: ApplicationDatabase): NotificationCacheDao {
+        return applicationDatabase.notificationCacheDao()
     }
 
     @Provides
     @Singleton
-    fun provideRecordCacheDao(notificationDatabase: NotificationDatabase): RecordCacheDao {
-        return notificationDatabase.recordCacheDao()
+    fun provideRecordCacheDao(applicationDatabase: ApplicationDatabase): RecordCacheDao {
+        return applicationDatabase.recordCacheDao()
     }
 
     @Provides
     @Singleton
-    fun provideCallLogCacheDao(notificationDatabase: NotificationDatabase): CallLogCacheDao {
-        return notificationDatabase.callLogCacheDao()
+    fun provideCallLogCacheDao(applicationDatabase: ApplicationDatabase): CallLogCacheDao {
+        return applicationDatabase.callLogCacheDao()
     }
 
     @Provides
     @Singleton
-    fun provideMessageLogCacheDao(notificationDatabase: NotificationDatabase): MessageLogCacheDao {
-        return notificationDatabase.messageCacheDao()
+    fun provideMessageLogCacheDao(applicationDatabase: ApplicationDatabase): MessageLogCacheDao {
+        return applicationDatabase.messageCacheDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideContactsFileLogCacheDao(applicationDatabase: ApplicationDatabase): ContactsLogCacheDao {
+        return applicationDatabase.contactsLogCacheDao()
     }
 
     @Provides
@@ -92,6 +102,12 @@ object AppModule {
     @Singleton
     fun provideNotificationRepository(notificationCacheDao: NotificationCacheDao): NotificationRepositoryImpl {
         return NotificationRepositoryImpl(notificationCacheDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContactsFileLogRepository(contactsFileLogCacheDao: ContactsLogCacheDao): ContactsFileLogRepositoryImpl {
+        return ContactsFileLogRepositoryImpl(contactsFileLogCacheDao)
     }
 
     @Provides
@@ -110,5 +126,11 @@ object AppModule {
             .client(okHttpClient)
             .build()
             .create(NetworkService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBotInstance(): Bot {
+        return Bot(Constants.BOT_ID)
     }
 }
