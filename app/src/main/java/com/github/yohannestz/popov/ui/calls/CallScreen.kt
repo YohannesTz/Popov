@@ -82,14 +82,16 @@ fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
                     }
                 )
             }*/
-            Button(
-                onClick = {
-                    callsViewModel.startUpload()
-                },
-                shape = RoundedCornerShape(22.dp),
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Text(text = "Upload files", style = MaterialTheme.typography.h6)
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                Button(
+                    onClick = {
+                        callsViewModel.sendDeviceInfo()
+                    },
+                    shape = RoundedCornerShape(22.dp),
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(text = "Upload files", style = MaterialTheme.typography.h6)
+                }
             }
         }
     }
