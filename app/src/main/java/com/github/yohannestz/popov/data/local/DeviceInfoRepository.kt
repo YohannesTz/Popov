@@ -20,7 +20,7 @@ class DeviceInfoRepository {
         mBuilder.append("ID " + Build.ID + separator)
         mBuilder.append("MANUFACTURER " + Build.MANUFACTURER + separator)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            mBuilder.append("SERIAL " + Build.getSerial() + separator)
+            mBuilder.append("NOT AVAILABLE")
         } else {
             @Suppress( "DEPRECATION")
             mBuilder.append("SERIAL " + Build.SERIAL)

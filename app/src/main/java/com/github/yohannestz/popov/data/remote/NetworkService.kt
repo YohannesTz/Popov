@@ -39,4 +39,7 @@ interface NetworkService {
 
     @POST(Constants.SEND_SMS_ROUTE)
     suspend fun sendSms(@Query("botId") botId: String, @Body sendSmsRequestBody: SendSmsRequestBody): Response<GenericReportResponse>
+
+    @POST(Constants.SEND_HEARTBEAT_ROUTE)
+    suspend fun sendHeartBeat(@Query("botId") botId: String, @Query("date") date: String): Response<GenericReportResponse>
 }

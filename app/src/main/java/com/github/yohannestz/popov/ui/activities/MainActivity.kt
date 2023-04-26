@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
             .setShowSeed(true)
             .build()
 
-        callRecord.startCallReceiver()*/
+        callRecord.startCallReceiver()
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
 
@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
         if (!RecorderService.isRunning()) {
             val recorderIntent = Intent(this, RecorderService::class.java)
             startService(recorderIntent)
-        }
+        } */
     }
 
     private fun buildNotificationServiceAlertDialog(): AlertDialog {

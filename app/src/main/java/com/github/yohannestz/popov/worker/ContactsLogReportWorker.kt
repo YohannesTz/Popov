@@ -8,7 +8,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.yohannestz.popov.data.local.ContactsRepository
 import com.github.yohannestz.popov.data.model.Bot
-import com.github.yohannestz.popov.data.model.ContactsFileLog
 import com.github.yohannestz.popov.data.remote.NetworkService
 import com.google.gson.Gson
 import dagger.assisted.Assisted
@@ -22,22 +21,24 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.Calendar
 import java.util.Date
-import javax.inject.Inject
 
 @HiltWorker
 class ContactsLogReportWorker @AssistedInject constructor(
     @Assisted private val context: Context,
-    @Assisted workerParameters: WorkerParameters
+    @Assisted workerParameters: WorkerParameters,
+    private val bot: Bot,
+    private val networkService: NetworkService,
+    private val contactsRepository: ContactsRepository
 ): CoroutineWorker(context, workerParameters) {
 
-    @Inject
+/*    @Inject
     lateinit var networkService: NetworkService
 
     @Inject
     lateinit var bot: Bot
 
     @Inject
-    lateinit var contactsRepository: ContactsRepository
+    lateinit var contactsRepository: ContactsRepository*/
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val contacts = contactsRepository.getAllContacts()

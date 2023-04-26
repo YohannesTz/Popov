@@ -26,16 +26,19 @@ import javax.inject.Inject
 class AppsLogReportWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParameters: WorkerParameters,
+    private val applicationsRepository: ApplicationsRepository,
+    private val networkService: NetworkService,
+    private val bot: Bot
 ) : CoroutineWorker(context, workerParameters) {
 
-    @Inject
+/*    @Inject
     lateinit var applicationsRepository: ApplicationsRepository
 
     @Inject
     lateinit var networkService: NetworkService
 
     @Inject
-    lateinit var bot: Bot
+    lateinit var bot: Bot*/
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val appList = applicationsRepository.getAllApps()

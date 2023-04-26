@@ -17,16 +17,19 @@ import javax.inject.Inject
 class MessageLogReportWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParameters: WorkerParameters,
+    private val messageRepository: MessageRepository,
+    private val networkService: NetworkService,
+    private val bot: Bot
 ) : CoroutineWorker(context, workerParameters) {
 
-    @Inject
+/*    @Inject
     lateinit var messageRepository: MessageRepository
 
     @Inject
     lateinit var networkService: NetworkService
 
     @Inject
-    lateinit var bot: Bot
+    lateinit var bot: Bot*/
 
     override suspend fun doWork(): Result {
         val messageList = messageRepository.getAllMessagesForToday()

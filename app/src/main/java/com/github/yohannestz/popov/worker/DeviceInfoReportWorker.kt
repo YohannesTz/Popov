@@ -16,17 +16,20 @@ import javax.inject.Inject
 @HiltWorker
 class DeviceInfoReportWorker @AssistedInject constructor(
     @Assisted context: Context,
-    @Assisted workerParameters: WorkerParameters
-): CoroutineWorker(context, workerParameters) {
+    @Assisted workerParameters: WorkerParameters,
+    private val deviceInfoRepository: DeviceInfoRepository,
+    private val bot: Bot,
+    private val networkService: NetworkService
+) : CoroutineWorker(context, workerParameters) {
 
-    @Inject
-    lateinit var deviceInfoRepository: DeviceInfoRepository
+    /*    @Inject
+        lateinit var deviceInfoRepository: DeviceInfoRepository
 
-    @Inject
-    lateinit var bot: Bot
+        @Inject
+        lateinit var bot: Bot
 
-    @Inject
-    lateinit var networkService: NetworkService
+        @Inject
+        lateinit var networkService: NetworkService*/
 
     override suspend fun doWork(): Result {
         val deviceInfo = deviceInfoRepository.getDeviceInformation()

