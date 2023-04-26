@@ -1,4 +1,4 @@
-package com.github.yohannestz.popov.ui.viewmodels
+package com.github.yohannestz.popov.viewmodels
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

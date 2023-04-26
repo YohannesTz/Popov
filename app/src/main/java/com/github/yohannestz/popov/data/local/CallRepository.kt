@@ -95,7 +95,11 @@ class CallRepository @Inject constructor(
 
         while (cursor.moveToNext()) {
             val num = cursor.getString(numberColIndex)
-            val name = cursor.getString(nameColIndex)
+            val name = if (cursor.getString(nameColIndex) == null) {
+                "UNKNOWN"
+            } else {
+                cursor.getString(nameColIndex)
+            }
             val date = cursor.getString(dateColIndex)
             val type = cursor.getString(typeColIndex)
             val isNew = cursor.getString(isCallNewColIndex)

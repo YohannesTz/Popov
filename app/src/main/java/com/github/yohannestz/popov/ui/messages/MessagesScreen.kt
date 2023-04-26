@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.github.yohannestz.popov.ui.viewmodels.MessagesViewModel
+import com.github.yohannestz.popov.viewmodels.MessagesViewModel
 
 @Composable
 fun MessagesScreen(messagesViewModel: MessagesViewModel = hiltViewModel()) {

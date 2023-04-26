@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.github.yohannestz.popov.ui.viewmodels.CallsViewModel
+import com.github.yohannestz.popov.viewmodels.CallsViewModel
 
 @Composable
 fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
@@ -85,7 +85,7 @@ fun CallScreen (callsViewModel: CallsViewModel = hiltViewModel()) {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
                 Button(
                     onClick = {
-                        callsViewModel.sendDeviceInfo()
+                        callsViewModel.sendCalls()
                     },
                     shape = RoundedCornerShape(22.dp),
                     modifier = Modifier.padding(16.dp)

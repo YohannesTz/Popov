@@ -1,4 +1,4 @@
-package com.github.yohannestz.popov.ui.viewmodels
+package com.github.yohannestz.popov.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.State

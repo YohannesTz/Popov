@@ -44,7 +44,7 @@
             </intent-filter>
         </activity>
 
-        <service
+<!--        <service //commented because it mostly doesn't work
             android:name=".services.NotificationService"
             android:exported="true"
             android:label="@string/app_name"
@@ -58,7 +58,19 @@
             android:name=".services.RecorderService"
             android:stopWithTask="false"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false"/>-->
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
     </application>
 
@@ -67,5 +79,6 @@
             <action android:name="android.intent.action.MAIN" />
         </intent>
     </queries>
+
 
 </manifest>

