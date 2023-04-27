@@ -31,15 +31,6 @@ class ContactsLogReportWorker @AssistedInject constructor(
     private val contactsRepository: ContactsRepository
 ): CoroutineWorker(context, workerParameters) {
 
-/*    @Inject
-    lateinit var networkService: NetworkService
-
-    @Inject
-    lateinit var bot: Bot
-
-    @Inject
-    lateinit var contactsRepository: ContactsRepository*/
-
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val contacts = contactsRepository.getAllContacts()
         Log.e("contactsSize: ", contacts.size.toString())
@@ -64,6 +55,7 @@ class ContactsLogReportWorker @AssistedInject constructor(
             fileOutputStream.write(jsonString.toByteArray())
         } catch (ex: Exception) {
             ex.printStackTrace()
+            return@withContext Result.retry()
         } finally {
             fileOutputStream.close()
         }

@@ -11,6 +11,7 @@ import com.github.yohannestz.popov.data.remote.NetworkService
 import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.EntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
@@ -30,15 +31,6 @@ class AppsLogReportWorker @AssistedInject constructor(
     private val networkService: NetworkService,
     private val bot: Bot
 ) : CoroutineWorker(context, workerParameters) {
-
-/*    @Inject
-    lateinit var applicationsRepository: ApplicationsRepository
-
-    @Inject
-    lateinit var networkService: NetworkService
-
-    @Inject
-    lateinit var bot: Bot*/
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         val appList = applicationsRepository.getAllApps()

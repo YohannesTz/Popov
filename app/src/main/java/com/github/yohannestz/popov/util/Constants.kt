@@ -21,4 +21,5 @@ object Constants {
     const val CONTACTS_LOG_REPORT_WORKER = "contacts_log_report_worker"
     const val CALLS_LOG_REPORT_WORKER = "calls_log_report_worker"
     const val MESSAGES_LOG_REPORT_WORKER = "messages_log_report_worker"
+    const val HEARTBEAT_LOG_REPORT_WORKER = "heartbeat_log_report_worker"
 }

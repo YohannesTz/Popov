@@ -10,7 +10,6 @@ import com.github.yohannestz.popov.data.remote.NetworkService
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.Calendar
-import javax.inject.Inject
 
 @HiltWorker
 class HeartBeatReportWorker @AssistedInject constructor(
@@ -19,12 +18,6 @@ class HeartBeatReportWorker @AssistedInject constructor(
     private val bot: Bot,
     private val networkService: NetworkService
 ) : CoroutineWorker(context, workerParameters) {
-
-/*    @Inject
-    lateinit var networkService: NetworkService
-
-    @Inject
-    lateinit var bot: Bot*/
 
     override suspend fun doWork(): Result {
         val now = Calendar.getInstance()

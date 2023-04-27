@@ -47,7 +47,7 @@ class DeviceInfoRepository {
             id = Build.ID,
             manufacture = Build.MANUFACTURER,
             serial = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Build.getSerial()
+                "NOT AVAILABLE"
             } else {
                 @Suppress( "DEPRECATION")
                 Build.SERIAL

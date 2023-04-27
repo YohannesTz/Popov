@@ -70,7 +70,6 @@ class MainActivity : ComponentActivity() {
                             android.Manifest.permission.READ_CALL_LOG,
                             android.Manifest.permission.READ_PHONE_STATE,
                             android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                            android.Manifest.permission.RECORD_AUDIO,
                             android.Manifest.permission.RECEIVE_BOOT_COMPLETED,
                         )
                     )
@@ -104,7 +103,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
+//commented because it doesn't work
 /*        callRecord = CallRecord.Builder(this)
             .setLogEnable(true)
             .setRecordFileName("call_rec_")

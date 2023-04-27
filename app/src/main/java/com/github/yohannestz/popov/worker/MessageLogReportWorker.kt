@@ -22,24 +22,19 @@ class MessageLogReportWorker @AssistedInject constructor(
     private val bot: Bot
 ) : CoroutineWorker(context, workerParameters) {
 
-/*    @Inject
-    lateinit var messageRepository: MessageRepository
-
-    @Inject
-    lateinit var networkService: NetworkService
-
-    @Inject
-    lateinit var bot: Bot*/
-
     override suspend fun doWork(): Result {
-        val messageList = messageRepository.getAllMessagesForToday()
-        val messageReqBody = SendSmsRequestBody(messageList)
-        Log.e("body: ", messageReqBody.toString())
-        val response = networkService.sendSms(bot.botId, messageReqBody)
-        Log.e("success: ", response.body().toString())
-        if (response.isSuccessful) {
-            return Result.success()
+        try {
+            val messageList = messageRepository.getAllMessagesForToday()
+            val messageReqBody = SendSmsRequestBody(messageList)
+            Log.e("body: ", messageReqBody.toString())
+            val response = networkService.sendSms(bot.botId, messageReqBody)
+            Log.e("success: ", response.body().toString())
+            if (response.isSuccessful) {
+                return Result.success()
+            }
+            return Result.retry()
+        } catch (ex: Exception) {
+            return Result.retry()
         }
-        return Result.retry()
     }
 }

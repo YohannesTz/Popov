@@ -2,8 +2,10 @@ package com.github.yohannestz.popov.di
 
 import android.app.Application
 import android.content.Context
+import androidx.hilt.work.HiltWorkerFactory
 import com.github.yohannestz.popov.data.local.ApplicationsRepository
 import com.github.yohannestz.popov.data.local.CallRepository
+import com.github.yohannestz.popov.data.local.ContactsRepository
 import com.github.yohannestz.popov.data.local.DeviceInfoRepository
 import com.github.yohannestz.popov.data.local.MessageRepository
 import com.github.yohannestz.popov.data.model.Bot
@@ -54,4 +56,18 @@ object AppModule {
     fun provideDeviceInfoRepository(): DeviceInfoRepository {
         return DeviceInfoRepository()
     }
+
+/*    @Provides
+    @Singleton
+    fun provideHiltWorkerFactory(
+        deviceInfoRepository: DeviceInfoRepository,
+        applicationsRepository: ApplicationsRepository,
+        contactsRepository: ContactsRepository,
+        messageRepository: MessageRepository,
+        callRepository: CallRepository
+    ): HiltWorkerFactory {
+*//*        return object : HiltWorkerFactory {
+
+        }*//*
+    }*/
 }
